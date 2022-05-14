@@ -12,7 +12,7 @@
     <com.google.android.material.imageview.ShapeableImageView
         android:id="@+id/max_player_background"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="0dp"
         android:background="@color/grey_dark"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -45,11 +45,12 @@
 
     <TextView
         android:id="@+id/max_player_artist"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:ellipsize="end"
-        android:lines="1"
+        android:gravity="center_horizontal"
+        android:scrollHorizontally="true"
+        android:singleLine="true"
         android:textColor="@color/white"
         android:textSize="24sp"
         android:textStyle="bold"
@@ -183,13 +184,14 @@
     <!--music list-->
 
     <androidx.recyclerview.widget.RecyclerView
+        android:background="@color/grey_dark"
         android:id="@+id/music_list_recycler_view"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_constraintBottom_toTopOf="@id/mini_player_background"
-        app:layout_constraintEnd_toEndOf="@id/mini_player_background"
-        app:layout_constraintStart_toStartOf="@id/mini_player_background"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:listitem="@layout/song_list_adapter_sample" />
 
@@ -239,35 +241,45 @@
         app:layout_constraintTop_toBottomOf="@+id/mini_player_title"
         tools:text="Artist" />
 
-    <com.google.android.material.imageview.ShapeableImageView
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/mini_player_previous"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
         android:layout_marginEnd="8dp"
-        android:src="@drawable/ic_previous"
-        android:tint="@color/white"
+        android:background="@drawable/ic_previous"
+        app:backgroundTint="@color/white"
         app:layout_constraintBottom_toBottomOf="@id/mini_player_album_art"
         app:layout_constraintEnd_toStartOf="@id/mini_player_play"
         app:layout_constraintTop_toTopOf="@id/mini_player_album_art" />
 
     <com.google.android.material.imageview.ShapeableImageView
+        android:id="@+id/mini_player_play_background"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:background="@color/white"
+        app:layout_constraintBottom_toBottomOf="@id/mini_player_play"
+        app:layout_constraintEnd_toEndOf="@id/mini_player_play"
+        app:layout_constraintStart_toStartOf="@id/mini_player_play"
+        app:layout_constraintTop_toTopOf="@id/mini_player_play" />
+
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/mini_player_play"
         android:layout_width="40dp"
         android:layout_height="40dp"
         android:layout_marginEnd="8dp"
-        android:src="@drawable/ic_play"
-        android:tint="#09FF00"
+        android:background="@drawable/ic_play"
+        app:backgroundTint="@color/green_light"
         app:layout_constraintBottom_toBottomOf="@id/mini_player_album_art"
         app:layout_constraintEnd_toStartOf="@id/mini_player_next"
         app:layout_constraintTop_toTopOf="@id/mini_player_album_art" />
 
-    <com.google.android.material.imageview.ShapeableImageView
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/mini_player_next"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
         android:layout_marginEnd="8dp"
-        android:src="@drawable/ic_next"
-        android:tint="@color/white"
+        android:background="@drawable/ic_next"
+        app:backgroundTint="@color/white"
         app:layout_constraintBottom_toBottomOf="@id/mini_player_album_art"
         app:layout_constraintEnd_toEndOf="@id/mini_player_background"
         app:layout_constraintTop_toTopOf="@id/mini_player_album_art" />

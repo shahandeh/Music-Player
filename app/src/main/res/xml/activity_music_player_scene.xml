@@ -19,6 +19,13 @@
             motion:layout_constraintEnd_toEndOf="@id/mini_player_background"
             motion:layout_constraintStart_toStartOf="@id/mini_player_background"
             motion:layout_constraintTop_toTopOf="parent" />
+        <Constraint
+            android:id="@+id/max_player_background"
+            motion:layout_constraintEnd_toEndOf="parent"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            motion:layout_constraintTop_toBottomOf="@id/mini_player_background"
+            motion:layout_constraintStart_toStartOf="parent" />
     </ConstraintSet>
 
     <ConstraintSet
@@ -39,31 +46,12 @@
             motion:layout_constraintEnd_toEndOf="@id/mini_player_background"
             motion:layout_constraintStart_toStartOf="@id/mini_player_background" />
         <Constraint
-            android:layout_height="24dp"
-            motion:layout_constraintEnd_toStartOf="@id/max_player_previous"
-            motion:layout_constraintStart_toStartOf="@id/max_player_background"
-            motion:layout_constraintTop_toTopOf="@+id/max_player_previous"
-            motion:layout_constraintBottom_toBottomOf="@+id/max_player_previous"
-            android:layout_width="24dp"
-            android:layout_marginStart="16dp"
-            android:id="@+id/max_player_repeat" />
-        <Constraint
-            android:layout_marginEnd="16dp"
-            android:layout_height="24dp"
-            motion:layout_constraintStart_toEndOf="@id/max_player_next"
-            motion:layout_constraintTop_toTopOf="@+id/max_player_next"
-            motion:layout_constraintBottom_toBottomOf="@+id/max_player_next"
-            motion:layout_constraintEnd_toEndOf="@id/max_player_background"
-            android:layout_width="24dp"
-            android:id="@+id/max_player_shuffle" />
-        <Constraint
-            android:layout_height="wrap_content"
-            motion:layout_constraintStart_toStartOf="@id/max_player_background"
-            android:layout_marginTop="16dp"
-            motion:layout_constraintEnd_toEndOf="@id/max_player_background"
-            android:layout_width="wrap_content"
-            motion:layout_constraintTop_toBottomOf="@id/max_player_artist"
-            android:id="@+id/max_player_title" />
+            android:id="@+id/max_player_background"
+            motion:layout_constraintEnd_toEndOf="parent"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            motion:layout_constraintTop_toBottomOf="@id/mini_player_background"
+            motion:layout_constraintStart_toStartOf="parent" />
     </ConstraintSet>
 
     <Transition
