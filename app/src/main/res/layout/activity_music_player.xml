@@ -7,6 +7,110 @@
     app:layoutDescription="@xml/activity_music_player_scene"
     tools:context=".MusicPlayer">
 
+    <!--side list-->
+
+    <com.google.android.material.imageview.ShapeableImageView
+        android:id="@+id/side_menu_background"
+        android:layout_width="200dp"
+        android:layout_height="match_parent"
+        android:background="@color/grey_dark"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.google.android.material.imageview.ShapeableImageView
+        android:id="@+id/side_menu_all_song"
+        android:layout_width="180dp"
+        android:layout_height="40dp"
+        android:layout_marginTop="16dp"
+        app:layout_constraintEnd_toEndOf="@id/side_menu_background"
+        app:layout_constraintStart_toStartOf="@id/side_menu_background"
+        app:layout_constraintTop_toTopOf="@id/side_menu_background" />
+
+    <com.google.android.material.imageview.ShapeableImageView
+        android:id="@+id/side_menu_all_song_icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:src="@drawable/ic_all_song"
+        android:tint="@color/white"
+        app:layout_constraintBottom_toBottomOf="@id/side_menu_all_song"
+        app:layout_constraintStart_toStartOf="@id/side_menu_all_song"
+        app:layout_constraintTop_toTopOf="@id/side_menu_all_song" />
+
+    <TextView
+        android:id="@+id/side_menu_all_song_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="48dp"
+        android:text="All Song"
+        android:textColor="@color/white"
+        app:layout_constraintBottom_toBottomOf="@id/side_menu_all_song"
+        app:layout_constraintStart_toStartOf="@id/side_menu_all_song"
+        app:layout_constraintTop_toTopOf="@id/side_menu_all_song" />
+
+    <com.google.android.material.imageview.ShapeableImageView
+        android:id="@+id/side_menu_album"
+        android:layout_width="180dp"
+        android:layout_height="40dp"
+        android:layout_marginTop="16dp"
+        app:layout_constraintEnd_toEndOf="@id/side_menu_background"
+        app:layout_constraintStart_toStartOf="@id/side_menu_background"
+        app:layout_constraintTop_toBottomOf="@id/side_menu_all_song" />
+
+    <com.google.android.material.imageview.ShapeableImageView
+        android:id="@+id/side_menu_album_icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:src="@drawable/ic_album"
+        android:tint="@color/white"
+        app:layout_constraintBottom_toBottomOf="@id/side_menu_album"
+        app:layout_constraintStart_toStartOf="@id/side_menu_album"
+        app:layout_constraintTop_toTopOf="@id/side_menu_album" />
+
+    <TextView
+        android:id="@+id/side_menu_album_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="48dp"
+        android:text="Album"
+        android:textColor="@color/white"
+        app:layout_constraintBottom_toBottomOf="@id/side_menu_album"
+        app:layout_constraintStart_toStartOf="@id/side_menu_album"
+        app:layout_constraintTop_toTopOf="@id/side_menu_album" />
+
+    <com.google.android.material.imageview.ShapeableImageView
+        android:id="@+id/side_menu_artist"
+        android:layout_width="180dp"
+        android:layout_height="40dp"
+        android:layout_marginTop="16dp"
+        app:layout_constraintEnd_toEndOf="@id/side_menu_background"
+        app:layout_constraintStart_toStartOf="@id/side_menu_background"
+        app:layout_constraintTop_toBottomOf="@id/side_menu_album" />
+
+    <com.google.android.material.imageview.ShapeableImageView
+        android:id="@+id/side_menu_artist_icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:src="@drawable/ic_artist"
+        android:tint="@color/white"
+        app:layout_constraintBottom_toBottomOf="@id/side_menu_artist"
+        app:layout_constraintStart_toStartOf="@id/side_menu_artist"
+        app:layout_constraintTop_toTopOf="@id/side_menu_artist" />
+
+    <TextView
+        android:id="@+id/side_menu_artist_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="48dp"
+        android:text="Artist"
+        android:textColor="@color/white"
+        app:layout_constraintBottom_toBottomOf="@id/side_menu_artist"
+        app:layout_constraintStart_toStartOf="@id/side_menu_artist"
+        app:layout_constraintTop_toTopOf="@id/side_menu_artist" />
+
     <!--max player-->
 
     <com.google.android.material.imageview.ShapeableImageView
@@ -133,7 +237,6 @@
         app:layout_constraintStart_toEndOf="@+id/max_player_repeat"
         app:layout_constraintTop_toTopOf="@+id/max_player_play" />
 
-
     <com.google.android.material.imageview.ShapeableImageView
         android:id="@+id/max_player_gradiant"
         android:layout_width="24dp"
@@ -184,16 +287,14 @@
     <!--music list-->
 
     <androidx.recyclerview.widget.RecyclerView
-        android:background="@color/grey_dark"
         android:id="@+id/music_list_recycler_view"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        android:background="@color/grey_dark"
         app:layout_constraintBottom_toTopOf="@id/mini_player_background"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:listitem="@layout/song_list_adapter_sample" />
+        app:layout_constraintTop_toTopOf="parent"/>
 
     <!--mini player-->
 

@@ -5,11 +5,17 @@ import android.media.MediaMetadataRetriever
 import android.media.MediaPlayer
 import android.net.Uri
 import android.provider.MediaStore
+import android.view.View
 import android.widget.ImageView
 import com.bumptech.glide.Glide
+import com.example.musicplayer.MusicPlayerApp.Companion.currentAlbumList
+import com.example.musicplayer.MusicPlayerApp.Companion.currentArtistList
 import com.example.musicplayer.MusicPlayerApp.Companion.currentMusicList
 import com.example.musicplayer.MusicPlayerApp.Companion.isRepeat
 import com.example.musicplayer.MusicPlayerApp.Companion.isShuffle
+import com.example.musicplayer.MusicPlayerApp.Companion.musicListSortedByAlbum
+import com.example.musicplayer.MusicPlayerApp.Companion.musicListSortedByArtist
+import com.example.musicplayer.MusicPlayerApp.Companion.musicListSortedByTitle
 import com.example.musicplayer.MusicPlayerApp.Companion.musicPlayer
 import com.example.musicplayer.MusicPlayerApp.Companion.musicPlayerState
 import com.example.musicplayer.MusicPlayerApp.Companion.musicPosition
@@ -17,8 +23,8 @@ import kotlin.random.Random
 
 object MPlayer {
 
-    fun getAudioList(context: Context){
-        val audioList = arrayListOf<MusicFile>()
+    fun getAudioList(context: Context) {
+        val musicTemp = ArrayList<MusicFile>()
         val uri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI
         val projection = arrayOf(
             MediaStore.Audio.Media.ALBUM,
@@ -41,14 +47,99 @@ object MPlayer {
                 val id = cursor.getString(5)
 
                 val mediaFile = MusicFile(path, title, artist, album, duration, id)
-                audioList.add(mediaFile)
+                musicTemp.add(mediaFile)
             }
             cursor.close()
         }
-        currentMusicList = audioList
+
+        musicTemp.forEach { musicListSortedByTitle.add(it) }
+        musicListSortedByTitle.sortBy { it.title }
+
+        musicTemp.forEach { musicListSortedByArtist.add(it) }
+        musicListSortedByArtist.sortBy { it.artist }
+
+        musicTemp.forEach { musicListSortedByAlbum.add(it) }
+        musicListSortedByAlbum.sortBy { it.album }
     }
 
-    fun getMusicArt(): ByteArray?{
+    fun setMusicList(){
+        currentMusicList.clear()
+        musicListSortedByTitle.forEach { currentMusicList.add(it) }
+    }
+
+    fun setAlbumList(){
+
+        val temp = ArrayList<MusicFile>()
+
+        for (i in musicListSortedByAlbum.indices){
+            when {
+                temp.isEmpty() -> temp.add(musicListSortedByAlbum[i])
+                musicListSortedByAlbum[i - 1].album == musicListSortedByAlbum[i].album -> temp.add(musicListSortedByAlbum[i])
+                else -> {
+                    currentAlbumList.add(setAlbumModel(temp))
+                    temp.clear()
+                    temp.add(musicListSortedByAlbum[i])
+                }
+            }
+        }
+        currentAlbumList.add(setAlbumModel(temp))
+        temp.clear()
+    }
+
+    private fun setAlbumModel(musicList: ArrayList<MusicFile>): AlbumModel{
+        val albumMusic = musicList.clone() as ArrayList<MusicFile>
+        return AlbumModel(
+            albumName = musicList[0].album,
+            albumArt = getMusicArt(musicList[0]),
+            albumMusicLis = albumMusic
+        )
+    }
+
+    fun createArtistList(){
+        val artistTemp = ArrayList<MusicFile>()
+        for (i in musicListSortedByArtist.indices){
+            when {
+                artistTemp.isEmpty() -> artistTemp.add(musicListSortedByArtist[i])
+                musicListSortedByArtist[i].artist == musicListSortedByArtist[i-1].artist -> artistTemp.add(musicListSortedByArtist[i])
+                else -> {
+                    createArtistModel(artistTemp)
+                    artistTemp.clear()
+                    artistTemp.add(musicListSortedByArtist[i])
+                }
+            }
+        }
+        artistTemp.add(musicListSortedByArtist.last())
+        createArtistModel(artistTemp)
+        artistTemp.clear()
+    }
+
+    private fun createArtistModel(musicList: ArrayList<MusicFile>){
+        val artTemp = ArrayList<ByteArray?>()
+        for (i in musicList.indices){
+            if (i < 5) artTemp.add(getMusicArt(musicList[i]))
+        }
+        currentArtistList.add(
+            ArtistModel(
+                artistName = musicList[0].artist,
+                trackCount = musicList.size,
+                albumList = artTemp
+            )
+        )
+    }
+
+    fun setArtistMusicList(artistName: String){
+        currentMusicList = musicListSortedByArtist.filter { it.artist == artistName } as ArrayList<MusicFile>
+    }
+
+    fun getMusicArt(musicFile: MusicFile): ByteArray? {
+        val uri = Uri.parse(musicFile.path)
+
+        val retriever = MediaMetadataRetriever()
+        retriever.setDataSource(uri.toString())
+        return retriever.embeddedPicture
+    }
+
+    fun getMusicArt(): ByteArray? {
         val uri = Uri.parse(currentMusicList[musicPosition].path)
 
         val retriever = MediaMetadataRetriever()
@@ -56,8 +147,8 @@ object MPlayer {
         return retriever.embeddedPicture
     }
 
-    fun playCurrentMusic(context: Context){
-        if (musicPlayerState){
+    fun playCurrentMusic(context: Context) {
+        if (musicPlayerState) {
             musicPlayer.stop()
             musicPlayer.release()
         }
@@ -66,7 +157,7 @@ object MPlayer {
         musicPlayer.start()
     }
 
-    fun setPreviousPosition(){
+    fun setPreviousPosition() {
         musicPosition = when {
             isRepeat -> {
                 musicPosition
@@ -80,7 +171,7 @@ object MPlayer {
         }
     }
 
-    fun playPreviousMusic(context: Context){
+    fun playPreviousMusic(context: Context) {
         musicPlayer.stop()
         musicPlayer.release()
         val uri = Uri.parse(currentMusicList[musicPosition].path)
@@ -124,13 +215,15 @@ object MPlayer {
 
     fun currentMusicPositionInPositionList() = "${musicPosition + 1} of ${currentMusicList.size}"
 
-    fun ImageView.glide(byteArray: ByteArray){
-        Glide.with(this)
-            .load(byteArray)
-            .into(this)
+    fun ImageView.glide(byteArray: ByteArray?) {
+        if (byteArray != null) {
+            Glide.with(this)
+                .load(byteArray)
+                .into(this)
+        }
     }
 
-    fun timeFormatter (time: Int): String{
+    fun timeFormatter(time: Int): String {
         val temp = time / 1000
         val minute = (temp / 60).toString().padStart(2, '0')
         val second = (temp % 60).toString().padStart(2, '0')

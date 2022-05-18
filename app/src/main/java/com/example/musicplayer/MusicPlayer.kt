@@ -3,17 +3,35 @@ package com.example.musicplayer
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
-import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.musicplayer.MPlayer.currentMusicPositionInPositionList
 import com.example.musicplayer.MPlayer.getAudioList
+import com.example.musicplayer.MPlayer.getMusicArt
 import com.example.musicplayer.MPlayer.glide
 import com.example.musicplayer.MPlayer.musicPlayerCurrentMusicArtist
 import com.example.musicplayer.MPlayer.musicPlayerCurrentMusicTitle
 import com.example.musicplayer.MPlayer.musicPlayerDurationToInt
 import com.example.musicplayer.MPlayer.musicPlayerDurationToString
+import com.example.musicplayer.MPlayer.musicPlayerPlayedTimeToInt
+import com.example.musicplayer.MPlayer.musicPlayerPlayedTimeToString
+import com.example.musicplayer.MPlayer.playCurrentMusic
+import com.example.musicplayer.MPlayer.playNextMusic
+import com.example.musicplayer.MPlayer.playPreviousMusic
+import com.example.musicplayer.MPlayer.setAlbumList
+import com.example.musicplayer.MPlayer.createArtistList
+import com.example.musicplayer.MPlayer.setArtistMusicList
+import com.example.musicplayer.MPlayer.setMusicList
+import com.example.musicplayer.MPlayer.setNextPosition
+import com.example.musicplayer.MPlayer.setPreviousPosition
+import com.example.musicplayer.MusicPlayerApp.Companion.currentAlbumList
+import com.example.musicplayer.MusicPlayerApp.Companion.currentArtistList
 import com.example.musicplayer.MusicPlayerApp.Companion.currentMusicList
 import com.example.musicplayer.MusicPlayerApp.Companion.musicPosition
 import com.example.musicplayer.databinding.ActivityMusicPlayerBinding
+import com.example.musicplayer.listadapter.AlbumListAdapter
+import com.example.musicplayer.listadapter.ArtistListAdapter
+import com.example.musicplayer.listadapter.MusicListAdapter
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -21,6 +39,9 @@ class MusicPlayer : AppCompatActivity() {
 
     private lateinit var binding: ActivityMusicPlayerBinding
     private lateinit var musicListAdapter: MusicListAdapter
+    private lateinit var albumListAdapter: AlbumListAdapter
+    private lateinit var artistListAdapter: ArtistListAdapter
+
     private lateinit var seekBarChangeListener: SeekBarChangeListener
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -29,11 +50,13 @@ class MusicPlayer : AppCompatActivity() {
         setContentView(binding.root)
 
         getAudioList(this)
+        allSongBtn()
+        createArtistList()
+        setAlbumList()
         setMetaData()
         seekBarTracker()
         seekBarListener()
 
-        musicListAdapterInit()
 
         binding.maxPlayerPrevious.setOnClickListener { playPrevious() }
         binding.miniPlayerPrevious.setOnClickListener { playPrevious() }
@@ -48,37 +71,73 @@ class MusicPlayer : AppCompatActivity() {
 
         binding.maxPlayerRepeat.setOnClickListener { repeatBtn() }
 
+        binding.sideMenuAllSong.setOnClickListener { allSongBtn() }
+
+        binding.sideMenuAlbum.setOnClickListener { albumSongBtn() }
+
+        binding.sideMenuArtist.setOnClickListener { artistListBtn() }
+
     }
 
-    private fun musicListAdapterInit() {
+    private fun allSongBtn() {
+        setMusicList()
+        musicListAdapter()
+    }
+
+    private fun albumSongBtn() {
+        albumListAdapter = AlbumListAdapter {
+            currentMusicList = currentAlbumList[it].albumMusicLis
+            musicListAdapter()
+        }
+        binding.musicListRecyclerView.apply {
+            adapter = albumListAdapter
+            layoutManager = GridLayoutManager(this@MusicPlayer, 2)
+        }
+        albumListAdapter.submitList(currentAlbumList)
+    }
+
+    private fun musicListAdapter(){
         musicListAdapter = MusicListAdapter {
             musicPosition = it
             playSelectedMusic()
         }
         binding.musicListRecyclerView.apply {
             adapter = musicListAdapter
-            addItemDecoration(DividerItemDecoration(this@MusicPlayer, DividerItemDecoration.VERTICAL))
+            layoutManager = LinearLayoutManager(this@MusicPlayer)
         }
         musicListAdapter.submitList(currentMusicList)
     }
 
+    private fun artistListBtn() {
+        artistListAdapter = ArtistListAdapter {
+            setArtistMusicList(currentArtistList[it].artistName)
+            musicListAdapter()
+        }
+        binding.musicListRecyclerView.apply {
+            adapter = artistListAdapter
+            layoutManager = LinearLayoutManager(this@MusicPlayer)
+        }
+        artistListAdapter.submitList(currentArtistList)
+    }
+
+
     private fun playSelectedMusic() {
         MusicPlayerApp.musicPlayerState = true
-        MPlayer.playCurrentMusic(this)
+        playCurrentMusic(this)
         setMetaData()
         seekBarTracker()
     }
 
     private fun playNext() {
-        MPlayer.setNextPosition()
-        MPlayer.playNextMusic(this)
+        setNextPosition()
+        playNextMusic(this)
         setMetaData()
         seekBarTracker()
     }
 
     private fun playPrevious() {
-        MPlayer.setPreviousPosition()
-        MPlayer.playPreviousMusic(this)
+        setPreviousPosition()
+        playPreviousMusic(this)
         setMetaData()
         seekBarTracker()
     }
@@ -119,14 +178,13 @@ class MusicPlayer : AppCompatActivity() {
         binding.miniPlayerTitle.text = musicPlayerCurrentMusicTitle()
         binding.miniPlayerArtist.text = musicPlayerCurrentMusicArtist()
 
-        val temp = MPlayer.getMusicArt()
+        val temp = getMusicArt()
         if (temp != null) {
             binding.apply {
                 maxPlayerAlbumArt.glide(temp)
                 miniPlayerAlbumArt.glide(temp)
             }
         }
-//        updateNotification()
     }
 
     private fun seekBarTracker() {
@@ -139,8 +197,8 @@ class MusicPlayer : AppCompatActivity() {
     }
 
     private fun updateSeekBarPosition() {
-        binding.maxPlayerSeekBar.progress = MPlayer.musicPlayerPlayedTimeToInt()
-        binding.maxPlayerPlayedTime.text = MPlayer.musicPlayerPlayedTimeToString()
+        binding.maxPlayerSeekBar.progress = musicPlayerPlayedTimeToInt()
+        binding.maxPlayerPlayedTime.text = musicPlayerPlayedTimeToString()
     }
 
     private fun seekBarListener() {

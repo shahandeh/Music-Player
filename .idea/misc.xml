@@ -3,10 +3,20 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="app/src/main/res/drawable/ic_album.xml" value="0.12" />
+        <entry key="app/src/main/res/drawable/ic_all_song.xml" value="0.12" />
+        <entry key="app/src/main/res/drawable/ic_artist.xml" value="0.12" />
         <entry key="app/src/main/res/drawable/repeat_selector.xml" value="0.1335" />
         <entry key="app/src/main/res/layout/activity_app.xml" value="0.2064814814814815" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.35794871794871796" />
-        <entry key="app/src/main/res/layout/activity_music_player.xml" value="0.33425925925925926" />
+        <entry key="app/src/main/res/layout/activity_music_player.xml" value="0.6096069868995633" />
+        <entry key="app/src/main/res/layout/album_recycler_view_sample.xml" value="0.36354166666666665" />
+        <entry key="app/src/main/res/layout/album_sample.xml" value="0.36354166666666665" />
+        <entry key="app/src/main/res/layout/artist_album_recycler_view_sample.xml" value="0.36354166666666665" />
+        <entry key="app/src/main/res/layout/artist_list.xml" value="0.36354166666666665" />
+        <entry key="app/src/main/res/layout/artist_recycler_view.xml" value="0.36354166666666665" />
+        <entry key="app/src/main/res/layout/artist_sample.xml" value="0.36354166666666665" />
+        <entry key="app/src/main/res/layout/delete_me.xml" value="0.36354166666666665" />
         <entry key="app/src/main/res/layout/song_list_adapter_sample.xml" value="0.2064814814814815" />
       </map>
     </option>

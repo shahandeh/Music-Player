@@ -1,8 +1,9 @@
-package com.example.musicplayer
+package com.example.musicplayer.diffcalback
 
 import androidx.recyclerview.widget.DiffUtil
+import com.example.musicplayer.MusicFile
 
-class MusicListDiffCallback: DiffUtil.ItemCallback<MusicFile>() {
+class MusicDiffCallback : DiffUtil.ItemCallback<MusicFile>() {
 
     override fun areItemsTheSame(oldItem: MusicFile, newItem: MusicFile) = oldItem.id == newItem.id
 
