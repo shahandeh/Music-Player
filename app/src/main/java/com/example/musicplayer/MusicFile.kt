@@ -6,5 +6,5 @@ data class MusicFile(
     var artist: String,
     var album: String,
     var duration: String,
-    var id: String
+    var id: String,
 )

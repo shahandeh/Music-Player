@@ -2,7 +2,6 @@ package com.example.musicplayer.diffcalback
 
 import androidx.recyclerview.widget.DiffUtil
 import com.example.musicplayer.AlbumModel
-import com.example.musicplayer.MusicFile
 
 class AlbumDiffCallback : DiffUtil.ItemCallback<AlbumModel>() {
 

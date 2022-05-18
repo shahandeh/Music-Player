@@ -5,9 +5,9 @@ import android.media.MediaMetadataRetriever
 import android.media.MediaPlayer
 import android.net.Uri
 import android.provider.MediaStore
-import android.view.View
 import android.widget.ImageView
 import com.bumptech.glide.Glide
+import com.example.musicplayer.MusicPlayerApp.Companion.activityIsAvailable
 import com.example.musicplayer.MusicPlayerApp.Companion.currentAlbumList
 import com.example.musicplayer.MusicPlayerApp.Companion.currentArtistList
 import com.example.musicplayer.MusicPlayerApp.Companion.currentMusicList
@@ -17,6 +17,7 @@ import com.example.musicplayer.MusicPlayerApp.Companion.musicListSortedByAlbum
 import com.example.musicplayer.MusicPlayerApp.Companion.musicListSortedByArtist
 import com.example.musicplayer.MusicPlayerApp.Companion.musicListSortedByTitle
 import com.example.musicplayer.MusicPlayerApp.Companion.musicPlayer
+import com.example.musicplayer.MusicPlayerApp.Companion.musicPlayerAction
 import com.example.musicplayer.MusicPlayerApp.Companion.musicPlayerState
 import com.example.musicplayer.MusicPlayerApp.Companion.musicPosition
 import kotlin.random.Random
@@ -62,19 +63,20 @@ object MPlayer {
         musicListSortedByAlbum.sortBy { it.album }
     }
 
-    fun setMusicList(){
+    fun setMusicList() {
         currentMusicList.clear()
         musicListSortedByTitle.forEach { currentMusicList.add(it) }
     }
 
-    fun setAlbumList(){
+    fun setAlbumList() {
 
         val temp = ArrayList<MusicFile>()
 
-        for (i in musicListSortedByAlbum.indices){
+        for (i in musicListSortedByAlbum.indices) {
             when {
                 temp.isEmpty() -> temp.add(musicListSortedByAlbum[i])
-                musicListSortedByAlbum[i - 1].album == musicListSortedByAlbum[i].album -> temp.add(musicListSortedByAlbum[i])
+                musicListSortedByAlbum[i - 1].album == musicListSortedByAlbum[i].album -> temp.add(
+                    musicListSortedByAlbum[i])
                 else -> {
                     currentAlbumList.add(setAlbumModel(temp))
                     temp.clear()
@@ -86,7 +88,7 @@ object MPlayer {
         temp.clear()
     }
 
-    private fun setAlbumModel(musicList: ArrayList<MusicFile>): AlbumModel{
+    private fun setAlbumModel(musicList: ArrayList<MusicFile>): AlbumModel {
         val albumMusic = musicList.clone() as ArrayList<MusicFile>
         return AlbumModel(
             albumName = musicList[0].album,
@@ -95,12 +97,13 @@ object MPlayer {
         )
     }
 
-    fun createArtistList(){
+    fun createArtistList() {
         val artistTemp = ArrayList<MusicFile>()
-        for (i in musicListSortedByArtist.indices){
+        for (i in musicListSortedByArtist.indices) {
             when {
                 artistTemp.isEmpty() -> artistTemp.add(musicListSortedByArtist[i])
-                musicListSortedByArtist[i].artist == musicListSortedByArtist[i-1].artist -> artistTemp.add(musicListSortedByArtist[i])
+                musicListSortedByArtist[i].artist == musicListSortedByArtist[i - 1].artist -> artistTemp.add(
+                    musicListSortedByArtist[i])
                 else -> {
                     createArtistModel(artistTemp)
                     artistTemp.clear()
@@ -113,9 +116,9 @@ object MPlayer {
         artistTemp.clear()
     }
 
-    private fun createArtistModel(musicList: ArrayList<MusicFile>){
+    private fun createArtistModel(musicList: ArrayList<MusicFile>) {
         val artTemp = ArrayList<ByteArray?>()
-        for (i in musicList.indices){
+        for (i in musicList.indices) {
             if (i < 5) artTemp.add(getMusicArt(musicList[i]))
         }
         currentArtistList.add(
@@ -127,8 +130,9 @@ object MPlayer {
         )
     }
 
-    fun setArtistMusicList(artistName: String){
-        currentMusicList = musicListSortedByArtist.filter { it.artist == artistName } as ArrayList<MusicFile>
+    fun setArtistMusicList(artistName: String) {
+        currentMusicList =
+            musicListSortedByArtist.filter { it.artist == artistName } as ArrayList<MusicFile>
     }
 
     fun getMusicArt(musicFile: MusicFile): ByteArray? {
@@ -157,7 +161,7 @@ object MPlayer {
         musicPlayer.start()
     }
 
-    fun setPreviousPosition() {
+    private fun setPreviousPosition() {
         musicPosition = when {
             isRepeat -> {
                 musicPosition
@@ -171,7 +175,7 @@ object MPlayer {
         }
     }
 
-    fun playPreviousMusic(context: Context) {
+    private fun playPreviousMusic(context: Context) {
         musicPlayer.stop()
         musicPlayer.release()
         val uri = Uri.parse(currentMusicList[musicPosition].path)
@@ -179,7 +183,7 @@ object MPlayer {
         if (musicPlayerState) musicPlayer.start()
     }
 
-    fun setNextPosition() {
+    private fun setNextPosition() {
         musicPosition = when {
             isRepeat -> {
                 musicPosition
@@ -193,12 +197,31 @@ object MPlayer {
         }
     }
 
-    fun playNextMusic(context: Context) {
+    private fun playNextMusic(context: Context) {
         musicPlayer.stop()
         musicPlayer.release()
         val uri = Uri.parse(currentMusicList[musicPosition].path)
         musicPlayer = MediaPlayer.create(context, uri)
         if (musicPlayerState) musicPlayer.start()
+    }
+
+    fun serviceActionPrevious(context: Context) {
+        setPreviousPosition()
+        playPreviousMusic(context)
+        if (activityIsAvailable) musicPlayerAction.setMetaData()
+    }
+
+    fun serviceActionPlay() {
+        if (musicPlayer.isPlaying) musicPlayer.pause()
+        else musicPlayer.start()
+        musicPlayerState = musicPlayer.isPlaying
+        if (activityIsAvailable) musicPlayerAction.playButtonChanged()
+    }
+
+    fun serviceActionNext(context: Context) {
+        setNextPosition()
+        playNextMusic(context)
+        if (activityIsAvailable) musicPlayerAction.setMetaData()
     }
 
     fun musicPlayerPlayedTimeToInt() = musicPlayer.currentPosition / 1000

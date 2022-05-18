@@ -3,10 +3,15 @@ package com.example.musicplayer
 import android.app.Application
 import android.media.MediaPlayer
 
-class MusicPlayerApp: Application() {
+class MusicPlayerApp : Application() {
 
     companion object {
         var musicPlayer = MediaPlayer()
+
+        lateinit var musicPlayerAction: MusicPlayerAction
+
+        var activityIsAvailable = false
+        var applicationIsAvailable = false
 
         var musicListSortedByTitle = ArrayList<MusicFile>()
         var musicListSortedByArtist = ArrayList<MusicFile>()
